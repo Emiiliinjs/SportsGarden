@@ -15,14 +15,15 @@
     <nav class="bg-blue-700 shadow">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <a href="{{ url('/') }}" class="text-2xl font-bold text-white">SportNews</a>
+                <a href="{{ route('home') }}" class="text-2xl font-bold text-white">SportNews</a>
 
                 <div class="hidden md:flex space-x-6">
-                    <a href="" class="text-white hover:text-yellow-300">Home</a>
-                    <a href="/football" class="text-white hover:text-yellow-300">Football</a>
-                    <a href="#" class="text-white hover:text-yellow-300">Basketball</a>
-                    <a href="#" class="text-white hover:text-yellow-300">Tennis</a>
-                </div>
+    <a href="{{ route('home') }}" class="text-white hover:text-yellow-300">Home</a>
+    <a href="{{ route('category', 'soccer') }}" class="text-white hover:text-yellow-300">Soccer</a>
+    <a href="{{ route('category', 'basketball') }}" class="text-white hover:text-yellow-300">Basketball</a>
+    <a href="{{ route('category', 'tennis') }}" class="text-white hover:text-yellow-300">Tennis</a>
+</div>
+
 
                 <div class="flex items-center space-x-4">
                     @if (Route::has('login'))
@@ -32,7 +33,6 @@
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="text-white hover:text-yellow-300">Log in</a>
-
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}" class="ml-2 px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg shadow hover:bg-yellow-500">
                                     Register
@@ -50,7 +50,6 @@
         <div class="absolute inset-0 bg-black/60 flex flex-col justify-center items-center text-center px-4">
             <h1 class="text-4xl md:text-5xl font-extrabold text-white">Latest Sports News</h1>
             <p class="text-lg text-gray-200 mt-3">Stay updated with the hottest news from around the sports world</p>
-            <a href="#" class="mt-6 px-6 py-3 bg-yellow-400 text-gray-900 font-semibold rounded-lg shadow hover:bg-yellow-500">Read More</a>
         </div>
     </section>
 
@@ -59,33 +58,22 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center mb-10">Top Headlines</h2>
             <div class="grid gap-8 md:grid-cols-3">
-                <!-- Card 1 -->
-                <div class="bg-white rounded-xl shadow hover:shadow-lg overflow-hidden">
-                    <img src="https://source.unsplash.com/400x250/?football" alt="Football" class="w-full h-48 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-semibold mb-2">Big Football Match Tonight</h3>
-                        <p class="text-gray-600 mb-4">Exciting clash between two giants is set to light up the stadium.</p>
-                        <a href="#" class="inline-block px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Read More</a>
+                @forelse($news as $item)
+                    <div class="bg-white rounded-xl shadow hover:shadow-lg overflow-hidden flex flex-col">
+                        <img src="{{ $item['urlToImage'] ?? 'https://source.unsplash.com/400x250/?sports' }}" alt="{{ $item['title'] }}" class="w-full h-48 object-cover">
+                        <div class="p-5 flex-1 flex flex-col">
+                            <h3 class="text-xl font-semibold mb-2">{{ $item['title'] }}</h3>
+                            <p class="text-gray-600 mb-2 flex-1">{{ $item['description'] ?? 'No description available.' }}</p>
+                            <div class="text-sm text-gray-500 mb-2">
+                                Source: {{ $item['source']['name'] ?? 'Unknown' }}<br>
+                                Published: {{ isset($item['publishedAt']) ? \Carbon\Carbon::parse($item['publishedAt'])->format('M d, Y H:i') : 'N/A' }}
+                            </div>
+                            <a href="{{ $item['url'] ?? '#' }}" target="_blank" class="mt-auto inline-block px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Read More</a>
+                        </div>
                     </div>
-                </div>
-                <!-- Card 2 -->
-                <div class="bg-white rounded-xl shadow hover:shadow-lg overflow-hidden">
-                    <img src="https://source.unsplash.com/400x250/?basketball" alt="Basketball" class="w-full h-48 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-semibold mb-2">NBA Finals Heat Up</h3>
-                        <p class="text-gray-600 mb-4">Tensions rise as teams battle for the championship title.</p>
-                        <a href="#" class="inline-block px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Read More</a>
-                    </div>
-                </div>
-                <!-- Card 3 -->
-                <div class="bg-white rounded-xl shadow hover:shadow-lg overflow-hidden">
-                    <img src="https://source.unsplash.com/400x250/?tennis" alt="Tennis" class="w-full h-48 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-semibold mb-2">Grand Slam Updates</h3>
-                        <p class="text-gray-600 mb-4">Top players compete in one of the most anticipated tournaments.</p>
-                        <a href="#" class="inline-block px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800">Read More</a>
-                    </div>
-                </div>
+                @empty
+                    <p class="text-center text-gray-600 col-span-3">No news available at the moment.</p>
+                @endforelse
             </div>
         </div>
     </section>
