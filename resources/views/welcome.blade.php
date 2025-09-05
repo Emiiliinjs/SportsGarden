@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Sport News</title>
+    <title>SportsGarden</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,13 +24,22 @@
         <nav class="bg-blue-700 shadow">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16 items-center">
-                    <a href="{{ route('home') }}" class="text-2xl font-bold text-white">SportNews</a>
+
+                    <!-- Logo + Site Name -->
+                    <a href="{{ route('home') }}" class="flex items-center space-x-2">
+                        <img src="{{ asset('Sport.png') }}" alt="SportsGarden Logo" class="h-10 w-10 object-contain">
+                        <span class="text-2xl font-bold text-white">SportsGarden</span>
+                    </a>
+
+                    <!-- Desktop Links -->
                     <div class="hidden md:flex space-x-6">
                         <a href="{{ route('home') }}" class="text-white hover:text-yellow-300">Home</a>
                         <a href="{{ route('category', 'soccer') }}" class="text-white hover:text-yellow-300">Soccer</a>
                         <a href="{{ route('category', 'basketball') }}" class="text-white hover:text-yellow-300">Basketball</a>
                         <a href="{{ route('category', 'tennis') }}" class="text-white hover:text-yellow-300">Tennis</a>
                     </div>
+
+                    <!-- Auth Links -->
                     <div class="flex items-center space-x-4">
                         @if (Route::has('login'))
                             @auth
@@ -47,6 +56,7 @@
                             @endauth
                         @endif
                     </div>
+
                 </div>
             </div>
         </nav>
@@ -87,7 +97,7 @@
         <!-- Footer -->
         <footer class="bg-blue-700 text-white py-6">
             <div class="max-w-7xl mx-auto text-center">
-                <p>&copy; {{ date('Y') }} SportNews. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} SportsGarden. All rights reserved.</p>
             </div>
         </footer>
 
