@@ -14,7 +14,7 @@ class NewsController extends Controller
         return view('welcome', ['news' => $news]);
     }
 
-    // Show news by category (football, basketball, tennis)
+    // Show news by category (soccer, basketball, tennis)
     public function category($category)
     {
         $news = $this->fetchNews($category);
@@ -24,35 +24,58 @@ class NewsController extends Controller
     // Helper function to fetch news from NewsAPI
     private function fetchNews($category = null)
     {
+        // Default params
         $params = [
-            'country' => 'us',
-            'pageSize' => 9,
-            'category' => 'sports', // general sports
+            'pageSize'   => 9,
+            'language'   => 'en',
         ];
 
-        if ($category) {
-            $params['q'] = $category; // filter by keyword
+        // Endpoint logic
+        if ($category === 'basketball') {
+            // Use everything endpoint for NBA/WNBA
+            $endpoint = 'https://newsapi.org/v2/everything';
+            $params['q'] = 'NBA OR WNBA OR basketball';
+            $params['sortBy'] = 'publishedAt';
+        } else {
+            // Use top-headlines for general sports
+            $endpoint = 'https://newsapi.org/v2/top-headlines';
+            $params['category'] = 'sports';
+            $params['country']  = 'us';
+
+            if ($category) {
+                // Allow filtering by keyword (soccer, tennis, etc.)
+                $params['q'] = $category;
+            }
         }
 
-        // Correctly send API key via X-Api-Key header
+        // Send request with API key in header
         $response = Http::withHeaders([
             'X-Api-Key' => env('NEWS_API_KEY'),
-        ])->get('https://newsapi.org/v2/top-headlines', $params);
+        ])->get($endpoint, $params);
 
         // Debug if request fails
         if (!$response->successful()) {
-            dd($response->status(), $response->body());
+            return [
+                [
+                    'title'       => 'Unable to fetch live news',
+                    'description' => 'Please try again later.',
+                    'urlToImage'  => 'https://source.unsplash.com/400x250/?sports',
+                    'url'         => '#',
+                    'source'      => ['name' => 'Unknown'],
+                    'publishedAt' => null,
+                ]
+            ];
         }
 
         $data = $response->json();
 
         return $data['articles'] ?? [
             [
-                'title' => 'Unable to fetch live news',
-                'description' => 'Please try again later.',
-                'urlToImage' => 'https://source.unsplash.com/400x250/?sports',
-                'url' => '#',
-                'source' => ['name' => 'Unknown'],
+                'title'       => 'No news available at the moment.',
+                'description' => 'Please check back later.',
+                'urlToImage'  => 'https://source.unsplash.com/400x250/?sports',
+                'url'         => '#',
+                'source'      => ['name' => 'Unknown'],
                 'publishedAt' => null,
             ]
         ];

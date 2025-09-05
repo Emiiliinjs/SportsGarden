@@ -4,10 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
 
-
-
+// Home route -> show dynamic sports news
 Route::get('/', [NewsController::class, 'index'])->name('home');
-Route::get('/{category}', [NewsController::class, 'category'])->name('category');
+
+// Explicit category routes to avoid conflict with auth (/login, /register, etc.)
+Route::get('/category/{category}', [NewsController::class, 'category'])->name('category');
 
 // Dashboard route (authenticated users only)
 Route::get('/dashboard', function () {
@@ -21,4 +22,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Auth routes (login, register, password reset)
 require __DIR__.'/auth.php';
