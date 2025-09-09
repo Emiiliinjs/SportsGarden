@@ -7,53 +7,64 @@ use Illuminate\Support\Facades\Http;
 
 class NewsController extends Controller
 {
-    // Show all sports news
-    public function index()
+    /**
+     * Show sports news or search results
+     */
+    public function index(Request $request)
     {
-        $news = $this->fetchNews();
+        $query = $request->input('query'); // Search query
+        $news  = $this->fetchNews(null, $query);
+
         return view('welcome', ['news' => $news]);
     }
 
-    // Show news by category (soccer, basketball, tennis)
-    public function category($category)
+    /**
+     * Show news by category
+     */
+    public function category($category, Request $request)
     {
-        $news = $this->fetchNews($category);
+        $query = $request->input('query'); // Optional search within category
+        $news  = $this->fetchNews($category, $query);
+
         return view('welcome', ['news' => $news]);
     }
 
-    // Helper function to fetch news from NewsAPI
-    private function fetchNews($category = null)
+    /**
+     * Helper: fetch news from NewsAPI
+     */
+    private function fetchNews($category = null, $query = null)
     {
-        // Default params
+        $apiKey  = config('services.sports_api.key');
+        $baseUrl = config('services.sports_api.base_url', 'https://newsapi.org/v2/');
+
         $params = [
-            'pageSize'   => 9,
-            'language'   => 'en',
+            'pageSize' => 9,
+            'language' => 'en',
         ];
 
-        // Endpoint logic
+        // Determine endpoint and query
         if ($category === 'basketball') {
-            // Use everything endpoint for NBA/WNBA
-            $endpoint = 'https://newsapi.org/v2/everything';
-            $params['q'] = 'NBA OR WNBA OR basketball';
+            $endpoint = $baseUrl . 'everything';
+            $params['q'] = $query ?? 'NBA OR WNBA OR basketball';
             $params['sortBy'] = 'publishedAt';
         } else {
-            // Use top-headlines for general sports
-            $endpoint = 'https://newsapi.org/v2/top-headlines';
+            $endpoint = $baseUrl . 'top-headlines';
             $params['category'] = 'sports';
-            $params['country']  = 'us';
+            $params['country'] = 'us';
 
             if ($category) {
-                // Allow filtering by keyword (soccer, tennis, etc.)
-                $params['q'] = $category;
+                $params['q'] = $category; // e.g., soccer, tennis
+            }
+
+            if ($query) {
+                $params['q'] = $query; // Override with search query
             }
         }
 
-        // Send request with API key in header
         $response = Http::withHeaders([
-            'X-Api-Key' => env('NEWS_API_KEY'),
+            'X-Api-Key' => $apiKey,
         ])->get($endpoint, $params);
 
-        // Debug if request fails
         if (!$response->successful()) {
             return [
                 [

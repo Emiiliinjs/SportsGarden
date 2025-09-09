@@ -1,20 +1,26 @@
 <?php
 
 return [
-    'sports_api' => [
-        'key' => env('SPORTS_API_KEY'),
-    ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Sports API
+    |--------------------------------------------------------------------------
+    |
+    | This is your Sports API key used for fetching news and other sports data.
+    |
+    */
+    'sports_api' => [
+    'key' => env('NEWS_API_KEY'),
+    'base_url' => env('NEWS_API_BASE_URL', 'https://newsapi.org/v2/'),
+],
 
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------
     |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
+    | Credentials for third party services like Mailgun, Postmark, AWS, Slack, etc.
     |
     */
 
@@ -32,9 +38,6 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-
-
-    
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

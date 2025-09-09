@@ -37,6 +37,9 @@
                         <a href="{{ route('category', 'soccer') }}" class="text-white hover:text-yellow-300">Soccer</a>
                         <a href="{{ route('category', 'basketball') }}" class="text-white hover:text-yellow-300">Basketball</a>
                         <a href="{{ route('category', 'tennis') }}" class="text-white hover:text-yellow-300">Tennis</a>
+                        @auth
+                            <a href="{{ route('rumors.index') }}" class="text-white hover:text-yellow-300">Rumors</a>
+                        @endauth
                     </div>
 
                     <!-- Auth Links (desktop) -->
@@ -87,6 +90,9 @@
                     <a href="{{ route('category', 'soccer') }}" class="hover:text-yellow-300">Soccer</a>
                     <a href="{{ route('category', 'basketball') }}" class="hover:text-yellow-300">Basketball</a>
                     <a href="{{ route('category', 'tennis') }}" class="hover:text-yellow-300">Tennis</a>
+                    @auth
+                        <a href="{{ route('rumors.index') }}" class="hover:text-yellow-300">Rumors</a>
+                    @endauth
                     <hr class="border-blue-500">
                     @if (Route::has('login'))
                         @auth
@@ -119,13 +125,31 @@
             });
         </script>
 
-        <!-- Hero Section -->
-        <section class="relative h-[65vh] flex items-center justify-center">
+        <!-- Hero Section with Search -->
+        <section class="relative h-[65vh] flex flex-col items-center justify-center">
             <div class="bg-white/90 backdrop-blur-md rounded-xl p-8 text-center max-w-3xl">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">Latest Sports News</h1>
                 <p class="text-lg text-gray-700 mt-3">Stay updated with the hottest news from around the sports world</p>
+
+                <!-- Search Form -->
+                <form action="{{ route('home') }}" method="GET" class="mt-6 flex justify-center">
+                    <input type="text" name="query" placeholder="Search news..." 
+                           class="px-4 py-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                           value="{{ request('query') }}">
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-700 text-white rounded-r-lg hover:bg-blue-800">Search</button>
+                </form>
             </div>
         </section>
+
+        <!-- Optional: Show Search Term -->
+        @if(request('query'))
+        <div class="max-w-3xl mx-auto mt-6 p-4 bg-white/90 backdrop-blur-md rounded-xl shadow text-center">
+            <p class="text-gray-900 font-semibold text-lg">
+                Showing results for: <span class="text-blue-700">{{ request('query') }}</span>
+            </p>
+        </div>
+        @endif
 
         <!-- Top Headlines Section -->
         <section class="py-12">
