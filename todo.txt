@@ -1,5 +1,3 @@
-Safixot Login un Register
 Dashboard normalu uztaisit/ admin panel
 Pievienot API citu futbolam/soccer 
-headline border
-
+uztaisit darkmode
