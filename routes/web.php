@@ -16,6 +16,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Admin-only delete route
+Route::delete('/rumors/{rumor}', [RumorController::class, 'destroy'])->name('rumors.destroy')->middleware('auth');
+
 // Authenticated routes for profile management
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

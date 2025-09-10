@@ -9,8 +9,21 @@ class Rumor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'description', 'image'];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'title',
+        'description',
+        'image',
+    ];
 
+    /**
+     * Get the user who posted the rumor.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

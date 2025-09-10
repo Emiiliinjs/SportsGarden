@@ -58,13 +58,15 @@ class RumorController extends Controller
     }
 
     /**
-     * Optional: Delete a rumor (only by the owner)
+     * Delete a rumor (only by admins)
      */
     public function destroy(Rumor $rumor)
     {
-        // Check ownership
-        if ($rumor->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized action.');
+        $user = Auth::user();
+
+        // Only admins can delete rumors
+        if (!$user->is_admin) {
+            abort(403, 'Unauthorized action. Only admins can delete rumors.');
         }
 
         // Delete image if exists

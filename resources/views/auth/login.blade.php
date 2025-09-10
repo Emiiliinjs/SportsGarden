@@ -1,5 +1,7 @@
-<x-guest-layout>
 
+
+@include('layouts.navbar')
+<x-guest-layout>
 
 
     <!-- Session Status -->
