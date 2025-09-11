@@ -30,5 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/rumors', [RumorController::class, 'store'])->name('rumors.store');
 });
 
+// Fallback route for any undefined route
+Route::fallback(function () {
+    return redirect('/'); // redirect to welcome page
+});
+
+
 // Auth routes (login, register, password reset)
 require __DIR__.'/auth.php';

@@ -30,3 +30,4 @@
         </form>
     </div>
 </x-guest-layout>
+@include('layouts.footer')
