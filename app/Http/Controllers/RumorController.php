@@ -58,6 +58,14 @@ class RumorController extends Controller
     }
 
     /**
+     * Display a single rumor
+     */
+    public function show(Rumor $rumor)
+    {
+        return view('rumors.show', compact('rumor'));
+    }
+
+    /**
      * Delete a rumor (only by admins)
      */
     public function destroy(Rumor $rumor)

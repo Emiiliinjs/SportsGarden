@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 // Home route -> show dynamic sports news, supports search
 Route::get('/', [NewsController::class, 'index'])->name('home');
 
+Route::get('/rumors/{rumor}', [RumorController::class, 'show'])->name('rumors.show');
+
 // Category routes (soccer, basketball, tennis)
 Route::get('/category/{category}', [NewsController::class, 'category'])->name('category');
 
