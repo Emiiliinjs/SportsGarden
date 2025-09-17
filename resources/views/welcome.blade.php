@@ -36,7 +36,6 @@
             </div>
         </section>
 
-        <!-- Optional Search Term -->
         @if(request('query'))
         <div class="max-w-3xl mx-auto mt-6 p-4 bg-white bg-opacity-90 backdrop-blur-md rounded-xl shadow-md text-center">
             <p class="text-gray-900 font-semibold text-lg">
@@ -58,30 +57,30 @@
                             
                             <!-- Image -->
                             <div class="relative">
-                                <img src="{{ $item['urlToImage'] ?? 'https://source.unsplash.com/600x400/?sports' }}" 
-                                     alt="{{ $item['title'] }}" 
+                                <img src="{{ $item->image ?? 'https://source.unsplash.com/600x400/?sports' }}" 
+                                     alt="{{ $item->title }}" 
                                      class="w-full h-56 object-cover group-hover:scale-105 transition duration-500">
                                 <span class="absolute top-4 left-4 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
-                                    {{ $item['source']['name'] ?? 'Unknown' }}
+                                    {{ $item->source ?? 'Unknown' }}
                                 </span>
                             </div>
                             
                             <!-- Content -->
                             <div class="flex-1 flex flex-col p-6">
                                 <h3 class="text-lg font-bold mb-3 group-hover:text-blue-600 transition">
-                                    {{ $item['title'] }}
+                                    <a href="{{ route('news.show', $item->id) }}">{{ $item->title }}</a>
                                 </h3>
                                 <p class="text-gray-700 text-sm flex-1 leading-relaxed">
-                                    {{ Str::limit($item['description'] ?? 'No description available.', 120) }}
+                                    {{ Str::limit($item->description ?? 'No description available.', 120) }}
                                 </p>
                                 
                                 <!-- Meta -->
                                 <div class="mt-4 text-xs text-gray-500">
-                                    📅 {{ isset($item['publishedAt']) ? \Carbon\Carbon::parse($item['publishedAt'])->format('M d, Y H:i') : 'N/A' }}
+                                    📅 {{ $item->published_at ? \Carbon\Carbon::parse($item->published_at)->format('M d, Y H:i') : 'N/A' }}
                                 </div>
                                 
                                 <!-- Button -->
-                                <a href="{{ $item['url'] ?? '#' }}" target="_blank"
+                                <a href="{{ route('news.show', $item->id) }}"
                                    class="mt-6 inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transform hover:scale-105 transition">
                                     Read More →
                                 </a>
@@ -96,7 +95,6 @@
             </div>
         </section>
 
-        <!-- Footer -->
         @include('layouts.footer')
 
     </div>

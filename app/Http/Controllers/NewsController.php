@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
@@ -13,7 +15,23 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('query'); // Search query
-        $news  = $this->fetchNews(null, $query);
+        $articles = $this->fetchNews(null, $query);
+
+        // Save/update articles in DB
+        foreach ($articles as $item) {
+            News::updateOrCreate(
+                ['title' => $item['title']],
+                [
+                    'description'  => $item['description'] ?? '',
+                    'url'          => $item['url'] ?? '',
+                    'image'        => $item['urlToImage'] ?? '',
+                    'source'       => $item['source']['name'] ?? '',
+                    'published_at' => $item['publishedAt'] ?? null,
+                ]
+            );
+        }
+
+        $news = News::latest()->take(12)->get();
 
         return view('welcome', ['news' => $news]);
     }
@@ -24,7 +42,23 @@ class NewsController extends Controller
     public function category($category, Request $request)
     {
         $query = $request->input('query'); // Optional search within category
-        $news  = $this->fetchNews($category, $query);
+        $articles = $this->fetchNews($category, $query);
+
+        // Save/update articles in DB
+        foreach ($articles as $item) {
+            News::updateOrCreate(
+                ['title' => $item['title']],
+                [
+                    'description'  => $item['description'] ?? '',
+                    'url'          => $item['url'] ?? '',
+                    'image'        => $item['urlToImage'] ?? '',
+                    'source'       => $item['source']['name'] ?? '',
+                    'published_at' => $item['publishedAt'] ?? null,
+                ]
+            );
+        }
+
+        $news = News::latest()->take(12)->get();
 
         return view('welcome', ['news' => $news]);
     }
@@ -37,17 +71,13 @@ class NewsController extends Controller
         $apiKey  = config('services.sports_api.key');
         $baseUrl = config('services.sports_api.base_url', 'https://newsapi.org/v2/');
 
-        // Default params
         $params = [
-            'pageSize' => 9,
+            'pageSize' => 12,
             'language' => 'en',
-            'country'  => 'us',
             'category' => 'sports',
         ];
 
-        // Add filters
         if ($query) {
-            // User search overrides category
             $params['q'] = $query;
         } elseif ($category) {
             switch ($category) {
@@ -66,12 +96,10 @@ class NewsController extends Controller
             }
         }
 
-        // Always use top-headlines with sports category
         $response = Http::withHeaders([
             'X-Api-Key' => $apiKey,
         ])->get($baseUrl . 'top-headlines', $params);
 
-        // Error fallback
         if (!$response->successful()) {
             return [[
                 'title'       => 'Unable to fetch live news',
@@ -93,5 +121,13 @@ class NewsController extends Controller
             'source'      => ['name' => 'Unknown'],
             'publishedAt' => null,
         ]];
+    }
+
+    /**
+     * Show a single news item (Laravel show page)
+     */
+    public function show(News $news)
+    {
+        return view('news.show', compact('news'));
     }
 }

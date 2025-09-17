@@ -17,6 +17,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/', [NewsController::class, 'index'])->name('home');
+Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
+
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     // Profile management
