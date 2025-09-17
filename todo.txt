@@ -1,7 +1,4 @@
 
 Pievienot API citu futbolam/soccer 
-uztaisit darkmode 50/50
-COMMENT ON RUMORS FIX
-pievienot cik cilveki nak utt viss dashboards 
-shows rumoriem
+
 max lenght rumoriem

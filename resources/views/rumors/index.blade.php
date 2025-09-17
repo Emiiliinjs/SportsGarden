@@ -68,10 +68,13 @@
                     @endif
                     <div class="flex-1 flex flex-col p-6">
                         <h3 class="text-xl font-bold mb-3 group-hover:text-blue-400 transition">
-                            {{ $rumor->title }}
+                            <a href="{{ route('rumors.show', $rumor) }}" 
+                               class="hover:underline hover:text-blue-500 transition">
+                                {{ $rumor->title }}
+                            </a>
                         </h3>
-                        <p class="mb-4 leading-relaxed">
-                            {{ $rumor->description }}
+                        <p class="mb-4 leading-relaxed line-clamp-3">
+                            {{ Str::limit($rumor->description, 150) }}
                         </p>
                         
                         <div class="text-sm text-gray-500 dark:text-gray-400 mb-4">
@@ -80,7 +83,10 @@
                         </div>
 
                         <div class="mt-auto flex gap-3">
-                            <a href="#" class="px-4 py-2 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg text-sm transition">💬 Comment</a>
+                            <a href="{{ route('rumors.show', $rumor) }}" 
+                               class="px-4 py-2 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg text-sm transition">
+                                👀 View
+                            </a>
                             
                             @if(Auth::user()?->is_admin)
                                 <form action="{{ route('rumors.destroy', $rumor) }}" method="POST" class="ml-auto">

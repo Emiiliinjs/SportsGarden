@@ -28,4 +28,12 @@ class Rumor extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get all comments for this rumor.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
