@@ -22,13 +22,17 @@
                         </div>
                     </div>
                     <!-- Comments placeholder -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex items-center gap-4">
-                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">💬</div>
-                        <div>
-                            <p class="text-gray-500 text-sm">Comments</p>
-                            <p class="text-2xl font-bold text-gray-900 dark:text-white">0</p>
-                        </div>
-                    </div>
+                    <!-- Comments -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex items-center gap-4">
+    <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">💬</div>
+    <div>
+        <p class="text-gray-500 text-sm">Comments</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ \App\Models\Comment::count() }}
+        </p>
+    </div>
+</div>
+
                     <!-- Visits -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex items-center gap-4">
                         <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">📈</div>
