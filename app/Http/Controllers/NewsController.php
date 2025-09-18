@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
@@ -31,13 +30,22 @@ class NewsController extends Controller
             );
         }
 
-        $news = News::latest()->take(12)->get();
+        // Fetch news from DB with search filter if query exists
+        if ($query) {
+            $news = News::where('title', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%")
+                        ->latest()
+                        ->take(12)
+                        ->get();
+        } else {
+            $news = News::latest()->take(12)->get();
+        }
 
         return view('welcome', ['news' => $news]);
     }
 
     /**
-     * Show news by category
+     * Show news by category (soccer, basketball, tennis)
      */
     public function category($category, Request $request)
     {
@@ -58,13 +66,28 @@ class NewsController extends Controller
             );
         }
 
-        $news = News::latest()->take(12)->get();
+        // Fetch news from DB filtered by category and optional search
+        $newsQuery = News::query();
+
+        if ($category) {
+            $newsQuery->where('description', 'like', "%{$category}%")
+                      ->orWhere('title', 'like', "%{$category}%");
+        }
+
+        if ($query) {
+            $newsQuery->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('description', 'like', "%{$query}%");
+            });
+        }
+
+        $news = $newsQuery->latest()->take(12)->get();
 
         return view('welcome', ['news' => $news]);
     }
 
     /**
-     * Helper: fetch news from NewsAPI
+     * Fetch news from NewsAPI
      */
     private function fetchNews($category = null, $query = null)
     {
@@ -124,7 +147,7 @@ class NewsController extends Controller
     }
 
     /**
-     * Show a single news item (Laravel show page)
+     * Show a single news item
      */
     public function show(News $news)
     {
