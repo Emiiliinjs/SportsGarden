@@ -87,6 +87,13 @@
                                class="px-4 py-2 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg text-sm transition">
                                 👀 View
                             </a>
+
+                            @if ($rumor->user_id === auth()->id())
+                                <a href="{{ route('rumors.edit', $rumor) }}" 
+                                   class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 text-sm shadow-sm hover:shadow-md transform hover:scale-105 transition">
+                                    ✏️ Edit
+                                </a>
+                            @endif
                             
                             @if(Auth::user()?->is_admin)
                                 <form action="{{ route('rumors.destroy', $rumor) }}" method="POST" class="ml-auto">

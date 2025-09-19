@@ -9,44 +9,35 @@ use Illuminate\Support\Facades\Storage;
 
 class RumorController extends Controller
 {
-    /**
-     * Only logged-in users can access these routes
-     */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['show']);
     }
 
     /**
-     * Display the Rumors page with the form and list of rumors
+     * Display all rumors
      */
     public function index()
     {
-        // Get latest rumors, newest first
         $rumors = Rumor::latest()->get();
         return view('rumors.index', compact('rumors'));
     }
 
     /**
-     * Store a new rumor submitted by a user
+     * Store a new rumor
      */
     public function store(Request $request)
     {
-        // Validate inputs
         $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
-            'image'       => 'nullable|image|max:2048', // max 2MB
+            'image'       => 'nullable|image|max:2048',
         ]);
 
-        $path = null;
+        $path = $request->hasFile('image')
+            ? $request->file('image')->store('rumors', 'public')
+            : null;
 
-        // Store image if uploaded
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('rumors', 'public');
-        }
-
-        // Create new rumor
         Rumor::create([
             'user_id'     => Auth::id(),
             'title'       => $request->title,
@@ -58,7 +49,7 @@ class RumorController extends Controller
     }
 
     /**
-     * Display a single rumor
+     * Show single rumor
      */
     public function show(Rumor $rumor)
     {
@@ -66,18 +57,55 @@ class RumorController extends Controller
     }
 
     /**
-     * Delete a rumor (only by admins)
+     * Edit rumor (only owner)
+     */
+    public function edit(Rumor $rumor)
+    {
+        if ($rumor->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('rumors.edit', compact('rumor'));
+    }
+
+    /**
+     * Update rumor (only owner)
+     */
+    public function update(Request $request, Rumor $rumor)
+    {
+        if ($rumor->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $validated = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'image'       => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($rumor->image && Storage::disk('public')->exists($rumor->image)) {
+                Storage::disk('public')->delete($rumor->image);
+            }
+            $validated['image'] = $request->file('image')->store('rumors', 'public');
+        }
+
+        $rumor->update($validated);
+
+        return redirect()->route('rumors.show', $rumor)->with('success', 'Rumor updated successfully!');
+    }
+
+    /**
+     * Delete rumor (only admin)
      */
     public function destroy(Rumor $rumor)
     {
         $user = Auth::user();
 
-        // Only admins can delete rumors
         if (!$user->is_admin) {
             abort(403, 'Unauthorized action. Only admins can delete rumors.');
         }
 
-        // Delete image if exists
         if ($rumor->image && Storage::disk('public')->exists($rumor->image)) {
             Storage::disk('public')->delete($rumor->image);
         }
