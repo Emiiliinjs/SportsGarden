@@ -23,15 +23,15 @@
                     </div>
                     <!-- Comments placeholder -->
                     <!-- Comments -->
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex items-center gap-4">
-    <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">💬</div>
-    <div>
-        <p class="text-gray-500 text-sm">Comments</p>
-        <p class="text-2xl font-bold text-gray-900 dark:text-white">
-            {{ \App\Models\Comment::count() }}
-        </p>
-    </div>
-</div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex items-center gap-4">
+                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">💬</div>
+                        <div>
+                            <p class="text-gray-500 text-sm">Comments</p>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                                {{ \App\Models\Comment::count() }}
+                            </p>
+                        </div>
+                    </div>
 
                     <!-- Visits -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex items-center gap-4">
@@ -84,13 +84,13 @@
                 type: 'line',
                 data: {
                     labels: {!! json_encode(
-                        collect(range(6,0))->map(fn($i) => now()->subDays($i)->format('M d'))
-                    ) !!},
+    collect(range(6, 0))->map(fn($i) => now()->subDays($i)->format('M d'))
+) !!},
                     datasets: [{
                         label: 'Visits',
                         data: {!! json_encode(
-                            collect(range(6,0))->map(fn($i) => \App\Models\Visit::whereDate('created_at', now()->subDays($i))->count())
-                        ) !!},
+    collect(range(6, 0))->map(fn($i) => \App\Models\Visit::whereDate('created_at', now()->subDays($i))->count())
+) !!},
                         borderColor: '#2563eb',
                         backgroundColor: 'rgba(37, 99, 235, 0.2)',
                         borderWidth: 2,

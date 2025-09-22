@@ -78,6 +78,22 @@
             <a href="{{ route('category', 'basketball') }}" class="hover:text-yellow-300">Basketball</a>
             <a href="{{ route('category', 'tennis') }}" class="hover:text-yellow-300">Tennis</a>
             <a href="{{ route('rumors.index') }}" class="hover:text-yellow-300">Rumors</a>
+
+            <hr class="border-blue-500">
+
+            @auth
+                <a href="{{ url('/dashboard') }}" class="hover:text-yellow-300">Dashboard</a>
+                <a href="{{ route('profile.edit') }}" class="hover:text-yellow-300">Profile</a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-left hover:text-yellow-300 w-full">Log Out</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="hover:text-yellow-300">Log in</a>
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="hover:text-yellow-300">Register</a>
+                @endif
+            @endauth
         </div>
     </div>
 </nav>
